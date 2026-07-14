@@ -1,6 +1,6 @@
 # Ant Design + React + React Query
 
-# Lesson 4 – Thêm truyện tranh với useMutation + Axios
+# Lesson 4 – Hiển thị danh sách truyện với useQuery + Table AntD
 
 ---
 
@@ -9,12 +9,12 @@
 Trong bài này chúng ta sẽ học:
 
 - React Query là gì
-- Mutation trong React Query
-- Gọi API bằng Axios
-- Kết hợp Ant Design Form + React Query
-- Ví dụ thêm truyện tranh
-- Xử lý loading khi submit
-- Bài tập thực hành
+- useQuery trong React Query
+- Gọi API GET danh sách truyện
+- Hiển thị dữ liệu với Table Ant Design
+- Xử lý loading & error
+- Mapping dữ liệu vào columns
+- Kết hợp React Query + Table
 
 ---
 
@@ -36,7 +36,7 @@ Tên chính thức hiện nay là:
 
 ---
 
-# 2. Khi nào dùng useMutation?
+# 2. useQuery là gì?
 
 Trong React Query có hai loại hook chính:
 
@@ -45,354 +45,211 @@ Trong React Query có hai loại hook chính:
 | useQuery    | Lấy dữ liệu (GET) |
 | useMutation | Thay đổi dữ liệu  |
 
-useMutation dùng cho:
+`useQuery` dùng để **lấy dữ liệu từ API (GET)**.
 
-- POST
-- PUT
-- PATCH
-- DELETE
+`useQuery` sẽ:
 
-Ví dụ:
-
-```id="mutation-example"
-useMutation({
-  mutationFn: createStory
-})
-```
+- Tự động gọi API
+- Cache dữ liệu
+- Tự động refetch
+- Quản lý loading & error
 
 ---
 
-# 3. Cài đặt thư viện
-
-Cài đặt React Query
-
-```bash
-npm install @tanstack/react-query
-```
-
-Cài đặt Axios
-
-```bash
-npm install axios
-```
-
----
-
-# 4. Cấu hình QueryClient
-
-Bọc toàn bộ ứng dụng bằng `QueryClientProvider` trong file main.tsx.
+# 2. Cách dùng cơ bản
 
 ```tsx
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
-import "./index.css";
-import App from "./App";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-const queryClient = new QueryClient();
-
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
-    </BrowserRouter>
-  </StrictMode>,
-);
-```
-
----
-
-# 5. API thêm truyện tranh
-
-Giả sử API:
-
-```
-POST http://localhost:3000/stories
-```
-
-Body dữ liệu:
-
-```json
-{
-  "title": "Naruto",
-  "author": "Masashi Kishimoto",
-  "image": "https://image.com/naruto.jpg",
-  "description": "Truyện ninja nổi tiếng"
-}
-```
-
----
-
-# 6. Form thêm truyện tranh
-
-Chúng ta sẽ:
-
-- dùng **Ant Design Form**
-- gọi API bằng **Axios**
-- sử dụng **useMutation**
-
----
-
-# 7. Ví dụ hoàn chỉnh
-
-```tsx
-import { Form, Input, Button } from "antd";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import toast from "react-hot-toast";
-
-const StoryForm = () => {
-  const mutation = useMutation({
-    mutationFn: async (data: any) => {
-      const res = await axios.post("http://localhost:3000/stories", data);
-
-      return res.data;
-    },
-
-    onSuccess: () => {
-      toast.success("Thêm truyện thành công");
-    },
-
-    onError: () => {
-      toast.error("Có lỗi xảy ra");
-    },
-  });
-
-  const onFinish = (values: any) => {
-    mutation.mutate(values);
-  };
-
-  return (
-    <Form layout="vertical" onFinish={onFinish} style={{ maxWidth: 500 }}>
-      <Form.Item
-        label="Tên truyện"
-        name="title"
-        rules={[{ required: true, message: "Nhập tên truyện" }]}
-      >
-        <Input />
-      </Form.Item>
-
-      <Form.Item label="Tác giả" name="author">
-        <Input />
-      </Form.Item>
-
-      <Form.Item label="Image URL" name="image">
-        <Input />
-      </Form.Item>
-
-      <Form.Item label="Mô tả" name="description">
-        <Input.TextArea rows={4} />
-      </Form.Item>
-
-      <Button type="primary" htmlType="submit" loading={mutation.isPending}>
-        Thêm truyện
-      </Button>
-    </Form>
-  );
-};
-
-export default StoryForm;
-```
-
----
-
-# 8. Giải thích code
-
-## useMutation
-
-```tsx
-const mutation = useMutation({
-  mutationFn: async (data) => {...}
+useQuery({
+  queryKey: ["stories"],
+  queryFn: fetchStories,
 });
 ```
 
-`mutationFn` là hàm thực hiện gọi API.
+---
+
+# 3. API lấy danh sách truyện
+
+GET http://localhost:3000/stories
 
 ---
 
-## Axios POST
+# 4. Ví dụ hoàn chỉnh
 
 ```tsx
-axios.post("http://localhost:3000/stories", data);
-```
+import { Table, Image, Spin } from "antd";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
-Axios sẽ gửi dữ liệu lên server.
+const StoryList = () => {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["stories"],
+    queryFn: async () => {
+      const res = await axios.get("http://localhost:3000/stories");
+      return res.data;
+    },
+  });
+
+  const columns = [
+    {
+      title: "ID",
+      dataIndex: "id",
+    },
+    {
+      title: "Ảnh",
+      dataIndex: "image",
+      render: (url: string) => <Image src={url} width={60} />,
+    },
+    {
+      title: "Tên truyện",
+      dataIndex: "title",
+    },
+    {
+      title: "Tác giả",
+      dataIndex: "author",
+    },
+    {
+      title: "Mô tả",
+      dataIndex: "description",
+    },
+  ];
+
+  if (isLoading) return <Spin />;
+
+  if (isError) return <p>Lỗi khi tải dữ liệu</p>;
+
+  return <Table columns={columns} dataSource={data} />;
+};
+
+export default StoryList;
+```
 
 ---
 
-## mutate
+# 5. Bài tập thực hành
+
+---
+
+## Bài 1 – Hiển thị cột Created At
+
+Thêm cột hiển thị ngày tạo của truyện trong Table.
+
+### Yêu cầu:
+
+- Hiển thị thêm cột `Created At`
+- Format ngày theo dạng: `dd/mm/yyyy`
+
+### Gợi ý:
+
+Thêm column:
 
 ```tsx
-mutation.mutate(values);
-```
-
-Gửi dữ liệu form tới API.
-
----
-
-## loading khi submit
-
-```tsx
-loading={mutation.isPending}
-```
-
-Khi đang gọi API:
-
-→ nút submit sẽ hiển thị loading.
-
----
-
-# 9. Flow hoạt động
-
-Luồng hoạt động của form:
-
-```
-User nhập form
-      ↓
-Submit form
-      ↓
-onFinish
-      ↓
-mutation.mutate()
-      ↓
-Axios POST API
-      ↓
-onSuccess / onError
-```
-
----
-
-# 10. Dữ liệu gửi lên server
-
-Ví dụ khi submit form:
-
-```json
 {
-  "title": "One Piece",
-  "author": "Oda",
-  "image": "https://img.com/op.jpg",
-  "description": "Truyện hải tặc"
+  title: "Created At",
+  dataIndex: "createdAt",
+  render: (date: string) => new Date(date).toLocaleDateString("vi-VN")
 }
 ```
 
 ---
 
-# 11. Ưu điểm của React Query Mutation
+## Bài 2 – Thêm cột Action (Xóa)
 
-| Feature        | Lợi ích            |
-| -------------- | ------------------ |
-| loading state  | không cần useState |
-| error handling | xử lý lỗi dễ       |
-| async API      | code gọn           |
-| retry          | tự retry request   |
+Thêm cột chứa nút **Xóa truyện**.
 
----
+### Yêu cầu:
 
-# 12. Cấu trúc project đơn giản
+- Mỗi dòng có 1 nút "Xóa"
+- Click → gọi API DELETE
+- Xóa thành công → cập nhật lại danh sách
 
-```
-src
- ├ components
- │   └ StoryForm.tsx
- ├ pages
- │   └ StoryPage.tsx
- └ App.tsx
-```
+### Gợi ý:
 
----
-
-# 13. Ví dụ trang thêm truyện
+Tạo button trong column:
 
 ```tsx
-import StoryForm from "../components/StoryForm";
+{
+  title: "Action",
+  render: (_, record) => (
+    <button onClick={() => handleDelete(record.id)}>
+      Xóa
+    </button>
+  )
+}
+```
 
-const StoryPage = () => {
-  return (
-    <div>
-      <h2>Thêm truyện tranh</h2>
+Hàm gọi API:
 
-      <StoryForm />
-    </div>
-  );
+```tsx
+const handleDelete = async (id: number) => {
+  await axios.delete(`http://localhost:3000/stories/${id}`);
 };
+```
 
-export default StoryPage;
+👉 Nâng cao: dùng `useMutation` + `invalidateQueries`
+
+---
+
+## Bài 3 – Thêm phân trang (Pagination)
+
+Thêm phân trang cho Table.
+
+### Yêu cầu:
+
+- Mỗi trang hiển thị 5 bản ghi
+- Có thể chuyển trang
+
+### Gợi ý:
+
+```tsx
+<Table pagination={{ pageSize: 5 }} />
 ```
 
 ---
 
-# 14. Bài tập thực hành
+## Bài 4 – Reload danh sách sau khi thêm truyện
 
-## Bài 1
+Sau khi thêm truyện ở Lesson 4 → danh sách tự động cập nhật.
 
-Tạo **Form thêm danh mục truyện**
+### Yêu cầu:
 
-Field:
+- Không cần reload trang
+- Table tự cập nhật dữ liệu mới
 
-- Title (required)
-- Description (Input.TextArea)
-- Active (Checkbox)
+### Gợi ý:
 
-Submit → gọi **Axios POST API**
+Sử dụng `queryClient.invalidateQueries`
 
+```tsx
+import { useQueryClient } from "@tanstack/react-query";
+
+const queryClient = useQueryClient();
+
+queryClient.invalidateQueries({ queryKey: ["stories"] });
 ```
-POST /categories
-```
+
+👉 Gọi trong `onSuccess` của `useMutation`
 
 ---
 
-## Bài 2
+## Bài 5 (Nâng cao) – Tìm kiếm truyện
 
-Thay **any** thành type/interface tương ứng Story
+Thêm chức năng search theo tên truyện.
 
+### Yêu cầu:
+
+- Input tìm kiếm
+- Lọc danh sách theo title
+
+### Gợi ý:
+
+```tsx
+const filteredData = data?.filter((item: any) =>
+  item.title.toLowerCase().includes(keyword.toLowerCase()),
+);
 ```
-data: any
-values: any
-```
-
----
-
-## Bài 3
-
-Hiển thị **loading khi submit**
-
-Sử dụng:
-
-```
-mutation.isPending
-```
-
----
-
-## Bài 4 (Nâng cao)
-
-Hiển thị danh sách để chọn 1 danh mục khi thêm truyện mới.
-
-- Call API GET /categories để lấy danh sách
-- Đưa dữ liệu categories vào options của Select
-
-Sử dụng:
-
-```
-Select options: [
-    {
-        value: categoryId,
-        label: categoryTitle
-    }
-]
-```
-
----
 
 # Tổng kết
 
-Trong bài này bạn đã học:
-
-- React Query Mutation
-- useMutation
-- Gọi API bằng Axios
-- Kết hợp Ant Design Form
-- Submit dữ liệu lên server
+- useQuery giúp gọi API GET
+- Table AntD giúp hiển thị dữ liệu đẹp
+- Kết hợp giúp xây dựng UI nhanh và clean
