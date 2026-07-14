@@ -1,3 +1,16 @@
 {
-  "stories": []
+  "stories": [
+    {
+      "id": 1,
+      "title": "Harry Potter Và Hòn Đá Phù Thủy",
+      "author": "J. K. Rowling",
+      "cover": "https://picsum.photos/300/450?random=1"
+    },
+    {
+      "id": 2,
+      "title": "Conan Tập 1",
+      "author": "Gosho Aoyama",
+      "cover": "https://picsum.photos/300/450?random=2"
+    }
+  ]
 }
