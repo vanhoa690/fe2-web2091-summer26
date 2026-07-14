@@ -1,23 +1,23 @@
+import { useQuery } from "@tanstack/react-query";
 import { Table } from "antd";
+import axios from "axios";
 
 function Lab4() {
-  // useState
-  // useEffect
   // useQuery
+  const { data } = useQuery({
+    queryKey: ["stories"],
+    queryFn: async () => {
+      const res = await axios.get("http://localhost:3000/stories");
+      return res.data;
+    },
+  });
+
   const columns = [
     { title: "Ten truyen", dataIndex: "title" },
-    { title: "Hinh anh", dataIndex: "image" },
+    { title: "Tac gia", dataIndex: "author" },
+    { title: "Hinh anh", dataIndex: "cover" },
   ];
-  const data = [
-    {
-      title: "naruto",
-      image: "image",
-    },
-    {
-      title: "onepeice",
-      image: "image",
-    },
-  ];
+
   return (
     <div>
       Lab4
