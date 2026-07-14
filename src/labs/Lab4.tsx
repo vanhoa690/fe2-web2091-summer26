@@ -1,6 +1,9 @@
 import { Table } from "antd";
 
 function Lab4() {
+  // useState
+  // useEffect
+  // useQuery
   const columns = [
     { title: "Ten truyen", dataIndex: "title" },
     { title: "Hinh anh", dataIndex: "image" },

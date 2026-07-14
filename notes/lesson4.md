@@ -33,7 +33,30 @@ Thư viện này giúp:
 Tên chính thức hiện nay là:
 
 **TanStack Query**
+#  Cấu hình QueryClient
 
+Bọc toàn bộ ứng dụng bằng `QueryClientProvider` trong file main.tsx.
+
+```tsx
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import "./index.css";
+import App from "./App";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
+    </BrowserRouter>
+  </StrictMode>,
+);
+```
 ---
 
 # 2. useQuery là gì?
