@@ -25,7 +25,16 @@ function Lab5() {
     <div>
       <h2>Lab5</h2>
       <Form onFinish={onFinish}>
-        <Form.Item label="Title" name="title" rules={[]}>
+        <Form.Item
+          label="Title"
+          name="title"
+          rules={[
+            { required: true },
+            {
+              min: 3,
+            },
+          ]}
+        >
           <Input />
         </Form.Item>
         <Button htmlType="submit">Submit</Button>
