@@ -2,10 +2,15 @@ import { useMutation } from "@tanstack/react-query";
 import { Button, Form, Input, message } from "antd";
 import axios from "axios";
 
+interface StoryForm {
+  title: string;
+  // author, cover, description
+}
+
 function Lab5() {
   // useMutation: POST data
   const { mutate } = useMutation({
-    mutationFn: async (data) => {
+    mutationFn: async (data: StoryForm) => {
       await axios.post("http://localhost:3000/stories", data);
     },
     onSuccess: () => {
@@ -17,7 +22,7 @@ function Lab5() {
     },
   });
 
-  const onFinish = (values: any) => {
+  const onFinish = (values: StoryForm) => {
     console.log(values);
     mutate(values);
   };
