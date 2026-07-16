@@ -33,7 +33,8 @@ Thư viện này giúp:
 Tên chính thức hiện nay là:
 
 **TanStack Query**
-#  Cấu hình QueryClient
+
+# Cấu hình QueryClient
 
 Bọc toàn bộ ứng dụng bằng `QueryClientProvider` trong file main.tsx.
 
@@ -57,6 +58,7 @@ createRoot(document.getElementById("root")!).render(
   </StrictMode>,
 );
 ```
+
 ---
 
 # 2. useQuery là gì?
@@ -231,7 +233,7 @@ Thêm phân trang cho Table.
 
 ## Bài 4 – Reload danh sách sau khi thêm truyện
 
-Sau khi thêm truyện ở Lesson 4 → danh sách tự động cập nhật.
+Sau khi thêm truyện → danh sách tự động cập nhật.
 
 ### Yêu cầu:
 
