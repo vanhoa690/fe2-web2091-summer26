@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { Table } from "antd";
+import { Button, Table } from "antd";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 function Lab4() {
   // useQuery
@@ -16,6 +17,16 @@ function Lab4() {
     { title: "Ten truyen", dataIndex: "title" },
     { title: "Tac gia", dataIndex: "author" },
     { title: "Hinh anh", dataIndex: "cover" },
+    {
+      title: "Actions",
+      render: (record: any) => {
+        return (
+          <Button danger>
+            <Link to={`/edit/${record.id}`}>Edit</Link>
+          </Button>
+        );
+      },
+    },
   ];
 
   return (

@@ -1,6 +1,7 @@
 import { Toaster } from "react-hot-toast";
-import { Link } from "react-router-dom";
-import Lab5 from "./labs/Lab5";
+import { Link, Route, Routes } from "react-router-dom";
+import Lab6 from "./labs/Lab6";
+import Lab4 from "./labs/Lab4";
 
 function App() {
   return (
@@ -37,7 +38,10 @@ function App() {
       {/* MAIN CONTENT */}
       <div className="max-w-6xl mx-auto mt-10 px-4 text-center">
         <h1 className="text-4xl font-bold mb-4">Chào mừng đến với WEB2091</h1>
-        <Lab5 />
+        <Routes>
+          <Route path="/" element={<Lab4 />}></Route>
+          <Route path="/edit/:id" element={<Lab6 />}></Route>
+        </Routes>
       </div>
 
       <Toaster />
