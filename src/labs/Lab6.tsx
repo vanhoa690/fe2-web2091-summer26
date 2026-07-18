@@ -8,21 +8,21 @@ function Lab6() {
   const { id } = useParams();
 
   // 2. lay data theo id
-  const { data } = useQuery({
-    queryKey: [],
-    queryFn: () => {},
-  });
+  // const { data } = useQuery({
+  //   queryKey: [],
+  //   queryFn: () => {},
+  // });
 
   // 3. fill Form
-  useEffect(() => {}, []);
+  // useEffect(() => {}, []);
 
   // 4. call api
-  const { mutate } = useMutation({
-    mutationFn: () => {},
-  });
+  // const { mutate } = useMutation({
+  //   mutationFn: () => {},
+  // });
 
   const onFinish = (values: any) => {
-    mutate(values);
+    // mutate(values);
   };
   return (
     <div>
