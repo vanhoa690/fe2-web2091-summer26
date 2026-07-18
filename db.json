@@ -20,5 +20,13 @@
       "title": "ten truyen",
       "id": 4
     }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "title": "Truyen trinh tham",
+      "description": "Truyen trinh tham hay",
+      "active": true
+    }
   ]
 }

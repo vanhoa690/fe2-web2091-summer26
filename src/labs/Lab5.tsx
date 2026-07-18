@@ -29,7 +29,7 @@ function Lab5() {
   return (
     <div>
       <h2>Lab5</h2>
-      <Form onFinish={onFinish}>
+      <Form onFinish={onFinish} layout="vertical">
         <Form.Item
           label="Title"
           name="title"
