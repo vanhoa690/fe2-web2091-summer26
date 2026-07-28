@@ -4,6 +4,7 @@ import Lab6 from "./labs/Lab6";
 import Lab4 from "./labs/Lab4";
 
 function App() {
+  //  lay user
   return (
     <>
       <nav className="bg-blue-600 text-white shadow">
