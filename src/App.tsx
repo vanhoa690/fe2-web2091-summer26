@@ -2,9 +2,14 @@ import { Toaster } from "react-hot-toast";
 import { Link, Route, Routes } from "react-router-dom";
 import Lab6 from "./labs/Lab6";
 import Lab4 from "./labs/Lab4";
+import { useUser } from "./context/UserContext";
+import Login from "./labs/Login";
 
 function App() {
   //  lay user
+  const { user } = useUser();
+  console.log(user);
+
   return (
     <>
       <nav className="bg-blue-600 text-white shadow">
@@ -26,7 +31,8 @@ function App() {
           </div>
 
           <div className="hidden md:flex items-center space-x-6">
-            <Link to="#" className="hover:text-gray-200">
+            {user && <span>{user.username}</span>}
+            <Link to="/login" className="hover:text-gray-200">
               Đăng nhập
             </Link>
             <Link to="#" className="hover:text-gray-200">
@@ -42,6 +48,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Lab4 />}></Route>
           <Route path="/edit/:id" element={<Lab6 />}></Route>
+          <Route path="/login" element={<Login />}></Route>
         </Routes>
       </div>
 

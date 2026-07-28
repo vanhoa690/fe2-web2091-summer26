@@ -1,9 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { Button, Table } from "antd";
 import axios from "axios";
+import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 
 function Lab4() {
+  const { user } = useContext(UserContext);
+  console.log(user);
   // useQuery
   const { data } = useQuery({
     queryKey: ["stories"],
