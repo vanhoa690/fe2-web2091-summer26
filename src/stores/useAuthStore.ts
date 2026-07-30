@@ -4,7 +4,10 @@ import { persist } from "zustand/middleware";
 const useAuthStore = create<any>()(
   persist(
     (set) => ({
-      user: null,
+      user: {
+        username: "hoadv",
+        email: "hoadv@gmail.com",
+      },
     }),
     {
       name: "useAuthStore",

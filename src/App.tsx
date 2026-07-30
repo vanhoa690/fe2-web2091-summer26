@@ -2,12 +2,15 @@ import { Toaster } from "react-hot-toast";
 import { Link, Route, Routes } from "react-router-dom";
 import Lab6 from "./labs/Lab6";
 import Lab4 from "./labs/Lab4";
-import { useUser } from "./context/UserContext";
+// import { useUser } from "./context/UserContext";
 import Login from "./labs/Login";
+import useAuthStore from "./stores/useAuthStore";
 
 function App() {
   //  lay user
-  const { user } = useUser();
+  // const { user } = useUser();
+
+  const { user } = useAuthStore();
   console.log(user);
 
   return (
@@ -31,7 +34,7 @@ function App() {
           </div>
 
           <div className="hidden md:flex items-center space-x-6">
-            {user && <span>{user.username}</span>}
+            {user && <span>{user.email}</span>}
             <Link to="/login" className="hover:text-gray-200">
               Đăng nhập
             </Link>
