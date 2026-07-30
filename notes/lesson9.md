@@ -68,7 +68,9 @@ npm run db
 
 ---
 
-## 📁 src/stores/useAuthStore.ts
+## 3. Tạo Auth Store
+
+**src/stores/useAuthStore.ts**
 
 ```ts
 import { create } from "zustand";
@@ -103,19 +105,30 @@ export const useAuthStore = create<AuthState>()(
 );
 ```
 
----
+### create()
 
-Có persist : lưu vào localStorage nên Reload vẫn giữ user
+Tạo một Store mới.
 
-```json
-{
-  "auth-storage": {
-    "state": {
-      "user": {...},
-      "token": "abc"
-    }
-  }
-}
+Store sẽ chứa:
+
+- user
+- token
+- các hàm cập nhật dữ liệu
+
+### persist()
+
+`persist` tự động lưu dữ liệu vào localStorage.
+
+```
+Đăng nhập
+    ↓
+Store cập nhật
+    ↓
+persist lưu localStorage
+    ↓
+Reload
+    ↓
+Đọc lại dữ liệu
 ```
 
 ---
@@ -128,93 +141,97 @@ Kết luận
 
 ---
 
-## 📁src/pages/Login.tsx
+## 4. Login
 
 ```tsx
-import { Form, Input, Button, message } from "antd";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import { useAuthStore } from "../stores/useAuthStore";
+const { mutate } = useMutation({
+  mutationFn: async (values: any) => {
+    return await axios.post("http://localhost:3000/login", values);
+  },
+  onSuccess: ({ data }) => {
+    setUser({
+      user: data.user,
+      token: data.accessToken,
+    });
+    message.success("Đăng nhập thành công!");
+  },
+  onError: () => {
+    message.error("Sai email hoặc password!");
+  },
+});
+```
 
-const Login = () => {
-  const { setUser } = useAuthStore();
+## 5. Đọc dữ liệu từ Store
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: async (values: any) => {
-      return await axios.post("http://localhost:3000/login", values);
-    },
+```tsx
+const user = useAuthStore((state) => state.user);
 
-    onSuccess: ({ data }) => {
-      // lưu vào zustand
-      setUser({
-        user: data.user,
-        token: data.accessToken,
-      });
+return <h3>{user?.email}</h3>;
+```
 
-      message.success("Đăng nhập thành công!");
-    },
+Khi dữ liệu trong Store thay đổi, component sẽ tự động render lại.
 
-    onError: () => {
-      message.error("Sai email hoặc password!");
-    },
-  });
+---
 
-  const onFinish = (values: any) => {
-    mutate(values);
-  };
+## 6. Logout
 
-  return (
-    <Form
-      layout="vertical"
-      onFinish={onFinish}
-      style={{ maxWidth: 400, margin: "50px auto" }}
-    >
-      <Form.Item
-        label="Email"
-        name="email"
-        rules={[{ required: true, message: "Nhập email!" }]}
-      >
-        <Input />
-      </Form.Item>
+```tsx
+const logout = useAuthStore((state) => state.logout);
 
-      <Form.Item
-        label="Password"
-        name="password"
-        rules={[{ required: true, message: "Nhập password!" }]}
-      >
-        <Input.Password />
-      </Form.Item>
-
-      <Form.Item>
-        <Button type="primary" htmlType="submit" loading={isPending} block>
-          Đăng nhập
-        </Button>
-      </Form.Item>
-    </Form>
-  );
-};
-
-export default Login;
+<Button onClick={logout}>Logout</Button>;
 ```
 
 ---
 
-## FLOW
+## 7. Flow
 
-1.  User nhập email/password
-2.  Gọi API login
-3.  Nhận token + user
-4.  Lưu vào Zustand
-5.  UI tự update
-6.  Reload vẫn giữ login
+```
+Form Login
+      ↓
+useMutation
+      ↓
+POST /login
+      ↓
+API trả về user + token
+      ↓
+setUser()
+      ↓
+Store cập nhật
+      ↓
+Header tự render
+      ↓
+persist
+      ↓
+Reload vẫn đăng nhập
+```
 
 ---
 
-## Tổng kết
+## Khi nào nên dùng Zustand?
 
-- Zustand đơn giản hơn Context
-- Phù hợp auth thực tế
-- Có persist để lưu trạng thái
+Nên dùng:
+
+- Đăng nhập
+- Giỏ hàng
+- Theme
+- User Profile
+- Ngôn ngữ
+
+Không nên dùng:
+
+- State chỉ sử dụng trong một component.
+
+---
+
+# Tổng kết
+
+- Zustand đơn giản hơn Context API
+- Không cần Provider
+- Dễ quản lý state toàn cục
+- Persist giúp lưu trạng thái sau khi reload
+- Có thể kết hợp React Query để quản lý đăng nhập
+
+---
 
 # Bài tập
 
