@@ -1,16 +1,18 @@
 import { Button } from "antd";
-import { useUser } from "../context/UserContext";
+import useAuthStore from "../stores/useAuthStore";
 
 function Login() {
   // sau login co user info
-  const { setUser } = useUser();
+  const { setUser } = useAuthStore();
 
   return (
     <div>
       <h2>Login</h2>
       <Button
         type="primary"
-        onClick={() => setUser({ username: "hoadvUpdate" })}
+        onClick={() =>
+          setUser({ username: "hoadv", email: "hoadvUpdate@gmail.com" })
+        }
       >
         Login
       </Button>
