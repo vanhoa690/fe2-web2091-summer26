@@ -4,18 +4,21 @@ import axios from "axios";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
+import useStoryList from "../hooks/useStoryList";
 
 function Lab4() {
   const { user } = useContext(UserContext);
   console.log(user);
   // useQuery
-  const { data } = useQuery({
-    queryKey: ["stories"],
-    queryFn: async () => {
-      const res = await axios.get("http://localhost:3000/stories");
-      return res.data;
-    },
-  });
+  // const { data } = useQuery({
+  //   queryKey: ["stories"],
+  //   queryFn: async () => {
+  //     const res = await axios.get("http://localhost:3000/stories");
+  //     return res.data;
+  //   },
+  // });
+
+  const { data, isError, isFetching } = useStoryList();
 
   const columns = [
     { title: "Ten truyen", dataIndex: "title" },
