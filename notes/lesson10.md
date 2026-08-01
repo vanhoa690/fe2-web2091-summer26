@@ -249,53 +249,6 @@ queryClient.invalidateQueries({
 
 ---
 
-## 12. Luồng hoạt động
-
-```text
-Component
-↓
-useStoryList
-↓
-useQuery
-↓
-axios
-↓
-Server
-↓
-Data
-↓
-Component
-```
-
-Thêm dữ liệu:
-
-```text
-Form
-↓
-useAddStory
-↓
-POST API
-↓
-onSuccess
-↓
-invalidateQueries
-↓
-Danh sách cập nhật
-```
-
----
-
-# Tổng kết
-
-- Hook là gì
-- Custom Hook là gì
-- Tách logic khỏi UI
-- useQuery
-- useMutation
-- invalidateQueries
-
----
-
 # Bài tập
 
 ## Bài 1
@@ -312,6 +265,30 @@ Tạo `useStoryDetail(id)`
 - GET `/stories/:id`
 
 ## Bài 3
+
+Tạo `useList(endpoint)`
+
+### Yêu cầu
+
+- Tạo Custom Hook `useList`
+- Nhận tham số `endpoint`
+- Sử dụng `useQuery`
+- `queryKey` sử dụng giá trị của `endpoint`
+- Gọi API: `GET /:endpoint`
+
+### Gợi ý
+
+Ví dụ:
+
+```tsx
+const { data } = useList("stories");
+
+const { data } = useList("users");
+
+const { data } = useList("categories");
+```
+
+## Bài 4
 
 Tách toàn bộ API sang:
 
