@@ -1,24 +1,11 @@
-# Ant Design + React + React Query
-
-# Lesson 11 --- Authentication với Bearer Token, Axios Interceptor & Private Route
+# Lesson 11 --- Authentication & Private Route
 
 ## Nội dung bài học
 
-- Authentication là gì
 - Authentication Flow
-- Token & JWT
-- Login Flow
-- Lưu Token
 - Bearer Token
-- Axios Instance
-- Axios Request Interceptor
-- Axios Response Interceptor
-- React Query
+- Axios Interceptor
 - Protected Route
-- Public Route
-- Logout
-- Best Practice
-- Bài tập thực hành
 
 ---
 
@@ -90,22 +77,6 @@ axiosClient.interceptors.request.use((config) => {
 
   return config;
 });
-```
-
-## Response Interceptor
-
-```ts
-axiosClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem("token");
-      window.location.href = "/login";
-    }
-
-    return Promise.reject(error);
-  },
-);
 ```
 
 ## Protected Route
