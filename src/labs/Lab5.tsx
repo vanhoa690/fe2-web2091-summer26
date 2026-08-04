@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { Button, Form, Input, message } from "antd";
 import axios from "axios";
+import useAddStory from "../hooks/useAddStory";
 
 interface StoryForm {
   title: string;
@@ -9,19 +10,20 @@ interface StoryForm {
 
 function Lab5() {
   // useMutation: POST data
-  const { mutate } = useMutation({
-    mutationFn: async (data: StoryForm) => {
-      await axios.post("http://localhost:3000/stories", data);
-    },
-    onSuccess: () => {
-      message.success("Them thanh cong");
-      // nav sang list
-    },
-    onError: () => {
-      message.error("Them that bai");
-    },
-  });
-
+  // const { mutate } = useMutation({
+  //   mutationFn: async (data: StoryForm) => {
+  //     await axios.post("http://localhost:3000/stories", data);
+  //   },
+  //   onSuccess: () => {
+  //     message.success("Them thanh cong");
+  //     // nav sang list
+  //   },
+  //   onError: () => {
+  //     message.error("Them that bai");
+  //   },
+  // });
+  const { mutate } = useAddStory();
+  
   const onFinish = (values: StoryForm) => {
     console.log(values);
     mutate(values);
