@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import axiosClient from "../api/axiosClient";
 
 const useStoryList = () => {
   return useQuery({
     queryKey: ["stories"],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:3000/stories");
+      const res = await axiosClient.get("/stories");
       return res.data;
     },
   });
